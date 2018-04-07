@@ -15,6 +15,10 @@ public class DrDoctorModule : MonoBehaviour
     public KMBombModule Module;
     public KMAudio Audio;
     public KMSelectable Caduceus;
+    public KMSelectable DateUp;
+    public KMSelectable DateDwn;
+    public KMSelectable MnthUp;
+    public KMSelectable MnthDwn;
 
     private static int _moduleIdCounter = 1;
     private int _moduleId;
@@ -28,6 +32,47 @@ public class DrDoctorModule : MonoBehaviour
 
         Module.OnActivate += ActivateModule;
         Caduceus.OnInteract += CaduceusPressed;
+        DateUp.OnInteract += DateUpPressed;
+        DateDwn.OnInteract += DateDwnPressed;
+        MnthUp.OnInteract += MnthUpPressed;
+        MnthDwn.OnInteract += MnthDwnPressed;
+
+    }
+
+    private bool MnthDwnPressed()
+    {
+        LogMessage("The Month Down Button was pressed. Theoretically, something would happen, but the programer was too lazy.");
+
+
+        return false; //IMMER return false, da sonst Compilerfeheler//
+    }
+
+    private bool MnthUpPressed()
+    {
+        LogMessage("The Month Up Button was pressed. Theoretically, something would happen, but the programer was too lazy.");
+
+
+
+        return false;
+    }
+
+    private bool DateDwnPressed()
+    {
+ LogMessage("The Day Down Button was pressed. Theoretically, something would happen, but the programer was too lazy.");
+
+
+
+        return false;
+    }
+
+    private bool DateUpPressed()
+    {
+        LogMessage("The Date Up Button was pressed. Theoretically, something would happen, but the programer was too lazy.");
+        Module.HandlePass();
+        LogMessage("You're Welcome. :P");
+
+
+        return false;
     }
 
     private bool CaduceusPressed()
@@ -35,7 +80,7 @@ public class DrDoctorModule : MonoBehaviour
         LogMessage("You clicked on the wrong button aka. the caduceus. You're welcome!");
         Module.HandleStrike();
         if (!_exploded)
-            {
+        {
 
             LogMessage("Bomb no Broke yet lul");
         };

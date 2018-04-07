@@ -14,21 +14,19 @@ public class DrDoctorModule : MonoBehaviour
     public KMBombInfo Bomb;
     public KMBombModule Module;
     public KMAudio Audio;
-
-    public KMSelectable CubeSolveButton;
     public KMSelectable Caduceus;
 
     private static int _moduleIdCounter = 1;
     private int _moduleId;
 
     private bool _isCaduceusShown;
+    private bool _exploded = false;
 
     void Start()
     {
         _moduleId = _moduleIdCounter++;
 
         Module.OnActivate += ActivateModule;
-        CubeSolveButton.OnInteract += ButtonPressed;
         Caduceus.OnInteract += CaduceusPressed;
     }
 
@@ -36,19 +34,17 @@ public class DrDoctorModule : MonoBehaviour
     {
         LogMessage("You clicked on the wrong button aka. the caduceus. You're welcome!");
         Module.HandleStrike();
+        if (!_exploded)
+            {
 
+            LogMessage("Bomb no Broke yet lul");
+        };
 
-        return false;
-    }
-
-    private bool ButtonPressed()
-    {
-        LogMessage("You clicked on the button.");
-        Module.HandlePass();
 
 
         return false;
     }
+
 
     void ActivateModule()
     {

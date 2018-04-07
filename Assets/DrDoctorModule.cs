@@ -19,6 +19,12 @@ public class DrDoctorModule : MonoBehaviour
     public KMSelectable DateDwn;
     public KMSelectable MnthUp;
     public KMSelectable MnthDwn;
+    public KMSelectable SympRight;
+    public KMSelectable SympLeft;
+    public KMSelectable DrugRight;
+    public KMSelectable DrugLeft;
+    public KMSelectable DoseRight;
+    public KMSelectable DoseLeft;
 
     private static int _moduleIdCounter = 1;
     private int _moduleId;
@@ -36,7 +42,17 @@ public class DrDoctorModule : MonoBehaviour
         DateDwn.OnInteract += DateDwnPressed;
         MnthUp.OnInteract += MnthUpPressed;
         MnthDwn.OnInteract += MnthDwnPressed;
+        DoseLeft.OnInteract += SolveModule;
 
+    }
+
+    private bool SolveModule()
+    {
+        LogMessage("Debug-Button was used, module solved.");
+
+        Module.HandlePass();
+
+        return false;
     }
 
     private bool MnthDwnPressed()

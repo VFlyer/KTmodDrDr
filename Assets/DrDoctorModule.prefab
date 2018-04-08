@@ -1206,7 +1206,7 @@ Transform:
   m_GameObject: {fileID: 1030109306662712}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.01, y: 1, z: 1.01}
+  m_LocalScale: {x: 1.03, y: 1.18, z: 1.01}
   m_Children: []
   m_Father: {fileID: 4037187910494168}
   m_RootOrder: 0
@@ -1261,7 +1261,7 @@ Transform:
   m_GameObject: {fileID: 1847090332482154}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.99, y: 0.99, z: 0.99}
+  m_LocalScale: {x: 0.99, y: 1.17, z: 0.99}
   m_Children: []
   m_Father: {fileID: 4576507977114992}
   m_RootOrder: 0
@@ -1949,7 +1949,7 @@ MeshRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1847090332482154}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_MotionVectors: 1
@@ -3721,7 +3721,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HighlightScale: {x: 1, y: 1, z: 1}
-  OutlineAmount: 0
+  OutlineAmount: 0.01
 --- !u!114 &114801449417360594
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3939,7 +3939,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HighlightScale: {x: 1, y: 1, z: 1}
-  OutlineAmount: 0
+  OutlineAmount: 0.01
 --- !u!114 &114955318434321710
 MonoBehaviour:
   m_ObjectHideFlags: 1

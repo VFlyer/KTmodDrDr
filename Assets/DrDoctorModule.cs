@@ -25,6 +25,8 @@ public class DrDoctorModule : MonoBehaviour
     public KMSelectable DrugLeft;
     public KMSelectable DoseRight;
     public KMSelectable DoseLeft;
+    public KMSelectable DiagnoseRight;
+    public KMSelectable DiagnoseLeft;
 
     private static int _moduleIdCounter = 1;
     private int _moduleId;
@@ -43,7 +45,49 @@ public class DrDoctorModule : MonoBehaviour
         MnthUp.OnInteract += MnthUpPressed;
         MnthDwn.OnInteract += MnthDwnPressed;
         DoseLeft.OnInteract += SolveModule;
+        DoseRight.OnInteract += DoseRightPressed;
+        DiagnoseRight.OnInteract += DiaRightPressed;
+        DiagnoseLeft.OnInteract += DiaLeftPressed;
+        DrugRight.OnInteract += DrugRightPressed;
+        DrugLeft.OnInteract += DrugLeftPressed;
+        SympLeft.OnInteract += SympLeftPressed;
+        SympRight.OnInteract += SympRightPressed;
 
+    }
+
+    private bool SympRightPressed()
+    {
+        throw new NotImplementedException();
+    }
+
+    private bool SympLeftPressed()
+    {
+        throw new NotImplementedException();
+    }
+
+    private bool DrugLeftPressed()
+    {
+        throw new NotImplementedException();
+    }
+
+    private bool DrugRightPressed()
+    {
+        throw new NotImplementedException();
+    }
+
+    private bool DiaLeftPressed()
+    {
+        throw new NotImplementedException();
+    }
+
+    private bool DiaRightPressed()
+    {
+        throw new NotImplementedException();
+    }
+
+    private bool DoseRightPressed()
+    {
+        throw new NotImplementedException();
     }
 
     private bool SolveModule()
@@ -67,7 +111,7 @@ public class DrDoctorModule : MonoBehaviour
     {
         LogMessage("The Month Up Button was pressed. Theoretically, something would happen, but the programer was too lazy.");
 
-
+        Module.HandlePass();
 
         return false;
     }

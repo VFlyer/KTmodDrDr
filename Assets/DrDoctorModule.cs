@@ -51,11 +51,11 @@ public class DrDoctorModule : MonoBehaviour
         new DiseaseInfo { Character = 'E', Disease = "Drowning Donuts", Symptoms = new[] { "Headache", "Muscle Cramp", "Nausea" },                 Treatment = "PUBG"                    },
         new DiseaseInfo { Character = 'F', Disease = "Blueberry",       Symptoms = new[] { "Throat irritation", "Constipation", "Foot swelling" }, Treatment = "Fortnite"                },
         new DiseaseInfo { Character = 'G', Disease = "Buddylight",      Symptoms = new[] { "Hallucination", "Cold Hands", "Excessive Crying" },    Treatment = "Scrap Mechanic"          },
-        new DiseaseInfo { Character = 'H', Disease = "Minttel",         Symptoms = new[] { "Gas", "Numbness", "Loss of smell" },                   Treatment = "Five Nights at Freddy’s" },
+        new DiseaseInfo { Character = 'H', Disease = "Minttel",         Symptoms = new[] { "Gas", "Numbness", "Loss of smell" },                   Treatment = "FNAF"                    },
         new DiseaseInfo { Character = 'I', Disease = "Quitter",         Symptoms = new[] { "Bloating", "Fever", "Hallucination" },                 Treatment = "The Forest"              },
         new DiseaseInfo { Character = 'K', Disease = "Vulvo",           Symptoms = new[] { "Headache", "Sleepiness", "Fever" },                    Treatment = "Candy Crush"             },
         new DiseaseInfo { Character = 'L', Disease = "Marcedes",        Symptoms = new[] { "Cough", "Excessive Crying", "Muscle Cramp" },          Treatment = "Super Mario Bros."       },
-        new DiseaseInfo { Character = 'M', Disease = "Chuvrolit",       Symptoms = new[] { "Diarrhea", "Cold Hands", "Gas" },                      Treatment = "Pac-Man"                 },
+        new DiseaseInfo { Character = 'M', Disease = "Chuvrolit",       Symptoms = new[] { "Fever", "Chills", "Dizziness" },                       Treatment = "Pac-Man"                 },
         new DiseaseInfo { Character = 'N', Disease = "MustardCard",     Symptoms = new[] { "Numbness", "Constipation", "Fatigue" },                Treatment = "Splatoon"                },
         new DiseaseInfo { Character = 'O', Disease = "Funta",           Symptoms = new[] { "Sleepiness", "Dizziness", "Thirstiness" },             Treatment = "Stardew Valley"          },
         new DiseaseInfo { Character = 'P', Disease = "Moreo",           Symptoms = new[] { "Sleepiness", "Cold Hands", "Thirstiness" },            Treatment = "Zelda"                   },
@@ -73,7 +73,7 @@ public class DrDoctorModule : MonoBehaviour
         new DiseaseInfo { Character = '2', Disease = "Foyota",          Symptoms = new[] { "Sleepiness", "Headache", "Dizziness" },                Treatment = "Metal Gear Solid"        },
         new DiseaseInfo { Character = '3', Disease = "Aircar",          Symptoms = new[] { "Foot swelling", "Excessive", "Crying Nausea" },        Treatment = "Stranded Deep"           },
         new DiseaseInfo { Character = '4', Disease = "Buggies",         Symptoms = new[] { "Sleepiness", "Bloating", "Dizziness" },                Treatment = "Where’s Waldo"           },
-        new DiseaseInfo { Character = '5', Disease = "Starducks",       Symptoms = new[] { "Constipation", "Hallucination", "Fatigue" },           Treatment = "KTaNE"                   },
+        new DiseaseInfo { Character = '5', Disease = "Starducks",       Symptoms = new[] { "Gas", "Numbness", "Loss of smell" },           Treatment = "KTaNE"                   },
         new DiseaseInfo { Character = '6', Disease = "Mike",            Symptoms = new[] { "Cold Hands", "Sleepiness", "Throat irritation" },      Treatment = "Tetris"                  },
     };
     private static CorrectDates[] _dates = new CorrectDates[]
@@ -118,6 +118,8 @@ public class DrDoctorModule : MonoBehaviour
     private string[] _selectableDates;
     private string[] _selectableMonths;
     private string indicatorLetters;
+    private string indicatorSum;
+
 
     private int _selectedSymptom;
     private int _selectedDiagnosis;
@@ -126,6 +128,7 @@ public class DrDoctorModule : MonoBehaviour
     private int _selectedDates;
     private int _selectedMonths;
     private int _unsolvedModules;
+
 
     private float _initialBombTime;
     private float _bombModulesTotal;
@@ -181,22 +184,30 @@ public class DrDoctorModule : MonoBehaviour
         _selectedDates = UnityEngine.Random.Range(1, 30);
 
         if (Bomb.GetIndicators().Count() > 0)
-            {
+        {
 
-            indicatorLetters = Bomb.GetOnIndicators().;
+            IEnumerable<string> indicators = Bomb.GetIndicators();
+
+            indicatorLetters = String.Join("", indicators.ToArray());
 
             LogMessage(indicatorLetters);
 
 
+
         }
-      
+
+
+
 
 
 
         SetTexts();
     }
 
-
+    void SelectionOrder()
+    {
+        //indicatorSum = indicatorLetters.Select(c => Char.IsDigit(c) ? c - '0' : c - '@');
+    }
 
     private void SetTexts()
     {
@@ -209,6 +220,8 @@ public class DrDoctorModule : MonoBehaviour
         //MnthText.text = _selectableMonths[_selectedMonths];
         // TODO: Alle 6
     }
+
+
 
     private string CalculateCorrectDose()
     {
@@ -230,30 +243,36 @@ public class DrDoctorModule : MonoBehaviour
 
 
 
+
+
+
             }
+
             else
             {
 
                 if (_selectableSymptoms.Contains("Fever"))
                 {
 
-                    return (Bomb.GetSolvedModuleNames().Count() * _unsolvedModules).ToString();
+                    return ((Bomb.GetSolvedModuleNames().Count() * _unsolvedModules).ToString() + "mg");
 
                 }
                 else
                 {
                     if (Bomb.GetModuleNames().Contains("iPhone"))
                     {
-                        return (Bomb.GetSerialNumberNumbers().First() * Bomb.GetSerialNumberNumbers().Last()).ToString();
+                        return ((Bomb.GetSerialNumberNumbers().First() * Bomb.GetSerialNumberNumbers().Last()).ToString() + "mg");
 
                     }
                     else
                     {
+                       
 
-                        //return sumofalphanumericvalues of indicators
+                        indicatorLetters.Sum(l => l - 'A' + 1).ToString(indicatorSum);
 
-                        return "itworks";
+                        LogMessage(indicatorSum);
 
+                        return indicatorSum;
                     }
                 }
 

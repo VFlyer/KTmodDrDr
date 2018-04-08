@@ -38,9 +38,7 @@ public class DrDoctorModule : MonoBehaviour
 
     private static int _moduleIdCounter = 1;
     private int _moduleId;
-
     private bool _exploded = false;
-    private bool _lastdigitSN;
 
     private static DiseaseInfo[] _diseases = new DiseaseInfo[]
     {
@@ -107,26 +105,20 @@ public class DrDoctorModule : MonoBehaviour
         new CorrectDates { Day = "11", Month = "5"},
         new CorrectDates { Day = "20", Month = "11"},
         new CorrectDates { Day = "4", Month = "7"},
-
-
-
     };
+
     private string[] _selectableSymptoms;
     private string[] _selectableDiagnoses;
     private string[] _selectableTreatments;
     private string[] _selectableDoses;
-    private string[] _selectableDates;
-    private string[] _selectableMonths;
-    private string indicatorLetters;
-    private string indicatorSum;
 
 
     private int _selectedSymptom;
     private int _selectedDiagnosis;
     private int _selectedTreatment;
     private int _selectedDose;
-    private int _selectedDates;
-    private int _selectedMonths;
+    private int _selectedDate;
+    private int _selectedMonth;
     private int _unsolvedModules;
 
 
@@ -165,41 +157,17 @@ public class DrDoctorModule : MonoBehaviour
         var additionalSymptoms = _diseases.SelectMany(d => d.Symptoms).Distinct().Except(symptoms).ToList().Shuffle().Take(2);
         _selectableSymptoms = symptoms.Concat(additionalSymptoms).ToArray().Shuffle();
 
-        _selectableDiagnoses = _diseases.ToList().Shuffle().Take(5).Select(d => d.Disease).ToArray();
+        var diseases = _diseases.ToList().Shuffle().Take(4).Concat(new[] { randomDisease }).ToArray().Shuffle();
+
+        _selectableDiagnoses = diseases.Select(d => d.Disease).ToArray();
         if (!_selectableDiagnoses.Any(s => s.Equals(randomDisease.Disease)))
             _selectableDiagnoses[Rnd.Range(0, 5)] = randomDisease.Disease;
 
-        var selectableTreatments = new List<string>();
-        selectableTreatments.AddRange(_diseases.ToList().Shuffle().Take(4).Select(d => d.Treatment));
-        if (selectableTreatments.Any(s => s.Equals(randomDisease.Treatment)))
-            selectableTreatments[0] = randomDisease.Treatment;
-        selectableTreatments.Add("Cyanide");
-        _selectableTreatments = selectableTreatments.ToArray().Shuffle();
-
+        _selectableTreatments = diseases.Select(d => d.Treatment).ToArray().Shuffle();
         _selectableDoses = new[] { CalculateCorrectDose(), "420g" }.Concat(Enumerable.Range(0, 3).Select(i => Rnd.Range(1, 999) + "mg")).ToArray().Shuffle();
 
-        _lastdigitSN = Bomb.GetSerialNumberNumbers().Last() <= 9;
-
-        _selectedMonths = UnityEngine.Random.Range(1, 12);
-        _selectedDates = UnityEngine.Random.Range(1, 30);
-
-        if (Bomb.GetIndicators().Count() > 0)
-        {
-
-            IEnumerable<string> indicators = Bomb.GetIndicators();
-
-            indicatorLetters = String.Join("", indicators.ToArray());
-
-            LogMessage(indicatorLetters);
-
-
-
-        }
-
-
-
-
-
+        _selectedMonth = Rnd.Range(1, 13);
+        _selectedDate = Rnd.Range(1, 32);
 
         SetTexts();
     }
@@ -216,12 +184,10 @@ public class DrDoctorModule : MonoBehaviour
         DiagnoseText.text = _selectableDiagnoses[_selectedDiagnosis];
         DoseText.text = _selectableDoses[_selectedDose];
         DrugText.text = _selectableTreatments[_selectedTreatment];
-        //DateText.text = _selectableDates[_selectedDates];
-        //MnthText.text = _selectableMonths[_selectedMonths];
+        DateText.text = _selectedDate.ToString();
+        MnthText.text = _selectedMonth.ToString();
         // TODO: Alle 6
     }
-
-
 
     private string CalculateCorrectDose()
     {
@@ -231,54 +197,44 @@ public class DrDoctorModule : MonoBehaviour
         // ...
 
         if (Bomb.GetSolvableModuleNames().Contains("Forget Me Not") && (Bomb.GetBatteryHolderCount() == 3) && (Bomb.GetBatteryCount() == 3) && (Bomb.GetOnIndicators().Contains("FRK") && Bomb.GetOffIndicators().Contains("TRN")))
-        {
-
             return "420g";
 
+        if (Bomb.GetOnIndicators().Contains("FRQ"))
+        {
+
+
+
+
+
+
         }
+
         else
         {
-            if (Bomb.GetOnIndicators().Contains("FRQ"))
+
+            if (_selectableSymptoms.Contains("Fever"))
             {
 
-
-
-
-
+                return ((Bomb.GetSolvedModuleNames().Count() * _unsolvedModules).ToString() + "mg");
 
             }
-
             else
             {
-
-                if (_selectableSymptoms.Contains("Fever"))
+                if (Bomb.GetModuleNames().Contains("iPhone"))
                 {
-
-                    return ((Bomb.GetSolvedModuleNames().Count() * _unsolvedModules).ToString() + "mg");
+                    return ((Bomb.GetSerialNumberNumbers().First() * Bomb.GetSerialNumberNumbers().Last()).ToString() + "mg");
 
                 }
                 else
                 {
-                    if (Bomb.GetModuleNames().Contains("iPhone"))
-                    {
-                        return ((Bomb.GetSerialNumberNumbers().First() * Bomb.GetSerialNumberNumbers().Last()).ToString() + "mg");
-
-                    }
-                    else
-                    {
-                       
-
-                        indicatorLetters.Sum(l => l - 'A' + 1).ToString(indicatorSum);
-
-                        LogMessage(indicatorSum);
-
-                        return indicatorSum;
-                    }
+                    var indicatorLetters = string.Join("", Bomb.GetIndicators().ToArray());
+                    var sum = indicatorLetters.Sum(l => l - 'A' + 1);
+                    LogMessage("Sum is: {0}", sum);
+                    return sum + "mg";
                 }
-
             }
 
-        };
+        }
 
         return "420mg";
     }
@@ -341,37 +297,29 @@ public class DrDoctorModule : MonoBehaviour
 
     private bool MnthDwnPressed()
     {
-        LogMessage("The Month Down Button was pressed. Theoretically, something would happen, but the programer was too lazy.");
-
-
-        return false; //IMMER return false, da sonst Compilerfeheler//
+        _selectedMonth = (_selectedMonth + 10) % 12 + 1;
+        SetTexts();
+        return false;
     }
 
     private bool MnthUpPressed()
     {
-        LogMessage("The Month Up Button was pressed. Theoretically, something would happen, but the programer was too lazy.");
-
-        Module.HandlePass();
-
+        _selectedMonth = _selectedMonth % 12 + 1;
+        SetTexts();
         return false;
     }
 
     private bool DateDwnPressed()
     {
-        LogMessage("The Day Down Button was pressed. Theoretically, something would happen, but the programer was too lazy.");
-
-
-
+        _selectedDate = (_selectedDate + 29) % 31 + 1;
+        SetTexts();
         return false;
     }
 
     private bool DateUpPressed()
     {
-        LogMessage("The Date Up Button was pressed. Theoretically, something would happen, but the programer was too lazy.");
-        Module.HandlePass();
-        LogMessage("You're Welcome. :P");
-
-
+        _selectedDate = _selectedDate % 31 + 1;
+        SetTexts();
         return false;
     }
 
@@ -433,7 +381,7 @@ public class DrDoctorModule : MonoBehaviour
     {
     }
 
-    void LogMessage(string message, params string[] parameters)
+    void LogMessage(string message, params object[] parameters)
     {
         Debug.LogFormat("[Dr. Doctor #{0}] {1}", _moduleId, string.Format(message, parameters));
     }

@@ -419,30 +419,33 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 4946767961572994, guid: dd8be24070046c649a8c59349a27907d, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 1
+    - target: {fileID: 102300880222715338, guid: dd8be24070046c649a8c59349a27907d,
+        type: 2}
+      propertyPath: m_Text
+      value: D
       objectReference: {fileID: 0}
-    - target: {fileID: 4256007390070092, guid: dd8be24070046c649a8c59349a27907d, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4377609843080442, guid: dd8be24070046c649a8c59349a27907d, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4371095639232886, guid: dd8be24070046c649a8c59349a27907d, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4036837493899258, guid: dd8be24070046c649a8c59349a27907d, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4364329283555324, guid: dd8be24070046c649a8c59349a27907d, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 1
-      objectReference: {fileID: 0}
+    - target: {fileID: 23798443208896020, guid: dd8be24070046c649a8c59349a27907d,
+        type: 2}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 11acdd21d3ba2434bb60df6e3b63a1c0, type: 3}
+    - target: {fileID: 102300880222715338, guid: dd8be24070046c649a8c59349a27907d,
+        type: 2}
+      propertyPath: m_Font
+      value: 
+      objectReference: {fileID: 12800000, guid: 11acdd21d3ba2434bb60df6e3b63a1c0,
+        type: 3}
+    - target: {fileID: 102941556341558006, guid: dd8be24070046c649a8c59349a27907d,
+        type: 2}
+      propertyPath: m_Font
+      value: 
+      objectReference: {fileID: 12800000, guid: 11acdd21d3ba2434bb60df6e3b63a1c0,
+        type: 3}
+    - target: {fileID: 23212763932029628, guid: dd8be24070046c649a8c59349a27907d,
+        type: 2}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 11acdd21d3ba2434bb60df6e3b63a1c0, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: dd8be24070046c649a8c59349a27907d, type: 2}
   m_IsPrefabParent: 0

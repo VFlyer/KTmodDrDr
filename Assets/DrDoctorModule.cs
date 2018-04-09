@@ -111,6 +111,7 @@ public class DrDoctorModule : MonoBehaviour
     private string[] _selectableDiagnoses;
     private string[] _selectableTreatments;
     private string[] _selectableDoses;
+    private Array applicable;
 
 
     private int _selectedSymptom;
@@ -120,10 +121,19 @@ public class DrDoctorModule : MonoBehaviour
     private int _selectedDate;
     private int _selectedMonth;
     private int _unsolvedModules;
+   
 
 
     private float _initialBombTime;
     private float _bombModulesTotal;
+    private float _halfBombTime;
+    private int rule;
+    private char character;
+
+    // O R G Y B
+    // 0 0 0 0 0
+
+    const string rules = "AFDPEOMZBGLQHRM1CJKUNYX5ITV3S246";
 
     void Update()
     {
@@ -151,6 +161,7 @@ public class DrDoctorModule : MonoBehaviour
 
         _initialBombTime = Bomb.GetTime();
         _bombModulesTotal = Bomb.GetSolvableModuleNames().Count();
+        _halfBombTime = Bomb.GetTime() / 2;
 
         var randomDisease = _diseases.PickRandom();
         var symptoms = randomDisease.Symptoms.ToList();
@@ -325,15 +336,32 @@ public class DrDoctorModule : MonoBehaviour
 
     private bool CaduceusPressed()
     {
-        // Find the correct character from the Venn diagram
-        var red = Bomb.GetSerialNumberNumbers().Last() % 2 == 0;
-        var green = Bomb.GetBatteryCount() >= 2;
-        var blue = Bomb.GetModuleNames().Count % 2 == 0;
-        var yellow = Bomb.GetOnIndicators().Count() > Bomb.GetOffIndicators().Count();
-        var orange = Bomb.GetTime() > _initialBombTime / 2;
+        // Red: Last Digit of SN even
+        if (Bomb.GetSerialNumberNumbers().Last() % 2 == 0) 
+        {
+            rule += 8;
+        }
+        // Orange: More than half the bombs time is left
+        if (_halfBombTime <= Bomb.GetTime())
+        {
+            rule += 16;
+        }
+        // Yellow: More Lit than Unlit
+        if (Bomb.GetOnIndicators().Count() > Bomb.GetOffIndicators().Count())
+        {
+            rule += 2;
+        }
+        // Green: 2 or more Batteries
+        if (Bomb.GetBatteryCount() >= 2) 
+        {
+            rule += 4;
+        }
+        // Blue: Even number of modules.
+        if (Bomb.GetModuleNames().Count() % 2 == 0) 
+        {
+            rule += 1;
+        }
 
-        // TO DO!! Find character in Venn diagram!
-        var character = 'A';//...
 
         // Starting from that disease, find the first one that has all three symptoms on the bomb
         var index = _diseases.IndexOf(d => d.Character == character);

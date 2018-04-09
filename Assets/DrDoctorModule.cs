@@ -15,6 +15,7 @@ public class DrDoctorModule : MonoBehaviour
     public KMBombInfo Bomb;
     public KMBombModule Module;
     public KMAudio Audio;
+    //Here's the list of all KMSelectables
     public KMSelectable Caduceus;
     public KMSelectable DateUp;
     public KMSelectable DateDwn;
@@ -28,7 +29,7 @@ public class DrDoctorModule : MonoBehaviour
     public KMSelectable DoseLeft;
     public KMSelectable DiagnoseRight;
     public KMSelectable DiagnoseLeft;
-
+    //End of the List
     public TextMesh SympText;
     public TextMesh DrugText;
     public TextMesh DoseText;
@@ -38,7 +39,7 @@ public class DrDoctorModule : MonoBehaviour
 
     private static int _moduleIdCounter = 1;
     private int _moduleId;
-    private bool _exploded = false;
+
 
     private static DiseaseInfo[] _diseases = new DiseaseInfo[]
     {
@@ -111,7 +112,6 @@ public class DrDoctorModule : MonoBehaviour
     private string[] _selectableDiagnoses;
     private string[] _selectableTreatments;
     private string[] _selectableDoses;
-    private Array applicable;
 
 
     private int _selectedSymptom;
@@ -121,7 +121,9 @@ public class DrDoctorModule : MonoBehaviour
     private int _selectedDate;
     private int _selectedMonth;
     private int _unsolvedModules;
-   
+    private int _closestDate;
+
+
 
 
     private float _initialBombTime;
@@ -129,6 +131,7 @@ public class DrDoctorModule : MonoBehaviour
     private float _halfBombTime;
     private int rule;
     private char character;
+
 
     // O R G Y B
     // 0 0 0 0 0
@@ -168,6 +171,8 @@ public class DrDoctorModule : MonoBehaviour
         var additionalSymptoms = _diseases.SelectMany(d => d.Symptoms).Distinct().Except(symptoms).ToList().Shuffle().Take(2);
         _selectableSymptoms = symptoms.Concat(additionalSymptoms).ToArray().Shuffle();
 
+
+
         var diseases = _diseases.ToList().Shuffle().Take(4).Concat(new[] { randomDisease }).ToArray().Shuffle();
 
         _selectableDiagnoses = diseases.Select(d => d.Disease).ToArray();
@@ -179,6 +184,13 @@ public class DrDoctorModule : MonoBehaviour
 
         _selectedMonth = Rnd.Range(1, 13);
         _selectedDate = Rnd.Range(1, 32);
+
+
+
+       
+
+
+        _closestDate = DateTime.Now.GetHashCode();
 
         SetTexts();
     }

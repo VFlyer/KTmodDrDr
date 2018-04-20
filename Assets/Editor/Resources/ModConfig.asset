@@ -19,7 +19,13 @@ MonoBehaviour:
     Module created by DanielL, livPlays, Implemented by livPlays.
 
 
-    Huge thanks to Timwi, for helping me program the whole module!'
+    Huge thanks to Timwi, for helping me program the whole module!
+
+
+    Thanks to Royal_Flu$h and red031000 for helping me a little bit.
+
+
+    Thanks to Riverbui for creating the manual.'
   version: 1.0
   outputFolder: build
   previewImage: {fileID: 2800000, guid: 9de0ff2e25dda834fa66b5804ba1fe20, type: 3}

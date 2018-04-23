@@ -208,7 +208,7 @@ public class DrDoctorModule : MonoBehaviour
         string dose;
         if (Bomb.GetOnIndicators().Contains("FRQ"))
         {
-            if (Bomb.GetSerialNumberNumbers().Last() % 2 == 1)
+            if (new [] {2,3,5,7}.Contains(Bomb.GetSerialNumberNumbers().Last()))
                 dose = "2g";
             else
                 dose = (Bomb.GetPorts().Distinct().Count() + Bomb.GetModuleNames().Count()) + "mg";

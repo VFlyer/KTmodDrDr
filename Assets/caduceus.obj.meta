@@ -1,17 +1,17 @@
 fileFormatVersion: 2
-guid: affc234c7e9f60346adb51695890b520
-timeCreated: 1523103363
+guid: 34830fb0d93b0254d9fe623f102c51f8
+timeCreated: 1524580261
 licenseType: Free
 ModelImporter:
   serializedVersion: 21
   fileIDToRecycleName:
-    100000: //RootNode
-    100002: default
-    400000: //RootNode
-    400002: default
-    2300000: default
-    3300000: default
-    4300000: default
+    100000: Caduceus
+    100002: //RootNode
+    400000: Caduceus
+    400002: //RootNode
+    2300000: Caduceus
+    3300000: Caduceus
+    4300000: Caduceus
   materials:
     importMaterials: 1
     materialName: 0

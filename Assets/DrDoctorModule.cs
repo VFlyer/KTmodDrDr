@@ -123,6 +123,7 @@ public class DrDoctorModule : MonoBehaviour
     private int _selectedDose;
     private int _selectedDate;
     private int _selectedMonth;
+    private bool _isSolved;
 
     private float _initialBombTime;
     private float _bombModulesTotal;
@@ -133,7 +134,7 @@ public class DrDoctorModule : MonoBehaviour
     void Start()
     {
         _moduleId = _moduleIdCounter++;
-
+        _isSolved = false;
         _initialBombTime = Bomb.GetTime();
         _bombModulesTotal = Bomb.GetSolvableModuleNames().Count();
         _halfBombTime = Bomb.GetTime() / 2;
@@ -164,27 +165,35 @@ public class DrDoctorModule : MonoBehaviour
         }
 
         _selectableTreatments = new[] { answer1.Treatment, answer2.Treatment, "Cyanide" }.Distinct().Concat(_diseases.Select(d => d.Treatment).Except(new[] { answer1.Treatment, answer2.Treatment }).ToList().Shuffle()).Take(5).ToArray().Shuffle();
-        _selectableDoses = new[] { CalculateCorrectDose(), "420g" }.Distinct().Concat(Enumerable.Range(0, 4).Select(i => Rnd.Range(1, 999) + "mg")).Take(5).ToArray().Shuffle();
+        var selectableDoses = new HashSet<string>(answer1.Doses.Concat(answer2.Doses).Concat(new[] { "420g" }));
+        while (selectableDoses.Count < 5)
+            selectableDoses.Add(Rnd.Range(1, 1000) + "mg");
+        _selectableDoses = selectableDoses.ToArray().Shuffle();
 
         _selectedMonth = Rnd.Range(1, 13);
         _selectedDate = Rnd.Range(1, 32);
 
-        LogMessage("Solution before half of the bomb time has passed: Diagnosis = {0}, Treatment = {1}, Dose = {2}, Follow-up date = {3}/{4}", answer1.Diagnosis, answer1.Treatment, answer1.Dose, answer1.Day, answer1.Month);
-        LogMessage("Solution after half of the bomb time has passed: Diagnosis = {0}, Treatment = {1}, Dose = {2}, Follow-up date = {3}/{4}", answer2.Diagnosis, answer2.Treatment, answer2.Dose, answer2.Day, answer2.Month);
+        var numSolvable = Bomb.GetSolvableModuleNames().Count;
+        LogMessage("Solution before half of the bomb time has passed:");
+        LogMessage("Diagnosis: {0}, Treatment: {1}, Follow-up date: {2}/{3}", answer1.Diagnosis, answer1.Treatment, answer1.Day, answer1.Month);
+        LogMessage("Dosis per number of solved modules: {0}", string.Join(", ", answer1.Doses.Select((d, ix) => string.Format("{0}={1}", ix, d)).ToArray()));
+        LogMessage("Solution after half of the bomb time has passed:");
+        LogMessage("Diagnosis: {0}, Treatment: {1}, Follow-up date: {2}/{3}", answer2.Diagnosis, answer2.Treatment, answer2.Day, answer2.Month);
+        LogMessage("Dosis per number of solved modules: {0}", string.Join(", ", answer2.Doses.Select((d, ix) => string.Format("{0}={1}", ix, d)).ToArray()));
 
         Caduceus.OnInteract += CaduceusPressed;
-        DateUp.OnInteract += DateUpPressed;
-        DateDwn.OnInteract += DateDwnPressed;
-        MnthUp.OnInteract += MnthUpPressed;
-        MnthDwn.OnInteract += MnthDwnPressed;
-        DoseLeft.OnInteract += DoseLeftPressed;
-        DoseRight.OnInteract += DoseRightPressed;
-        DiagnoseRight.OnInteract += DiaRightPressed;
-        DiagnoseLeft.OnInteract += DiaLeftPressed;
-        DrugRight.OnInteract += DrugRightPressed;
-        DrugLeft.OnInteract += DrugLeftPressed;
-        SympLeft.OnInteract += SympLeftPressed;
-        SympRight.OnInteract += SympRightPressed;
+        DateUp.OnInteract += MakeButtonPressHandler(DateUp, () => { _selectedDate = _selectedDate % 31 + 1; });
+        DateDwn.OnInteract += MakeButtonPressHandler(DateDwn, () => { _selectedDate = (_selectedDate + 29) % 31 + 1; });
+        MnthUp.OnInteract += MakeButtonPressHandler(MnthUp, () => { _selectedMonth = _selectedMonth % 12 + 1; });
+        MnthDwn.OnInteract += MakeButtonPressHandler(MnthDwn, () => { _selectedMonth = (_selectedMonth + 10) % 12 + 1; });
+        DoseLeft.OnInteract += MakeButtonPressHandler(DoseLeft, () => { _selectedDose = (_selectedDose + _selectableDoses.Length - 1) % _selectableDoses.Length; });
+        DoseRight.OnInteract += MakeButtonPressHandler(DoseRight, () => { _selectedDose = (_selectedDose + 1) % _selectableDoses.Length; });
+        DiagnoseLeft.OnInteract += MakeButtonPressHandler(DiagnoseLeft, () => { _selectedDiagnosis = (_selectedDiagnosis + _selectableDiagnoses.Length - 1) % _selectableDiagnoses.Length; });
+        DiagnoseRight.OnInteract += MakeButtonPressHandler(DiagnoseRight, () => { _selectedDiagnosis = (_selectedDiagnosis + 1) % _selectableDiagnoses.Length; });
+        DrugLeft.OnInteract += MakeButtonPressHandler(DrugLeft, () => { _selectedTreatment = (_selectedTreatment + _selectableTreatments.Length - 1) % _selectableTreatments.Length; });
+        DrugRight.OnInteract += MakeButtonPressHandler(DrugRight, () => { _selectedTreatment = (_selectedTreatment + 1) % _selectableTreatments.Length; });
+        SympLeft.OnInteract += MakeButtonPressHandler(SympLeft, () => { _selectedSymptom = (_selectedSymptom + _selectableSymptoms.Length - 1) % _selectableSymptoms.Length; });
+        SympRight.OnInteract += MakeButtonPressHandler(SympRight, () => { _selectedSymptom = (_selectedSymptom + 1) % _selectableSymptoms.Length; });
 
         SetTexts();
     }
@@ -200,7 +209,7 @@ public class DrDoctorModule : MonoBehaviour
         MnthText.text = _selectedMonth.ToString();
     }
 
-    private string CalculateCorrectDose()
+    private string CalculateCorrectDose(int numSolved)
     {
         if (Bomb.GetSolvableModuleNames().Contains("Forget Me Not") && (Bomb.GetBatteryHolderCount() == 3) && (Bomb.GetBatteryCount() == 3) && (Bomb.GetOnIndicators().Contains("FRK") && Bomb.GetOffIndicators().Contains("TRN")))
             return "420g";
@@ -208,7 +217,7 @@ public class DrDoctorModule : MonoBehaviour
         string dose;
         if (Bomb.GetOnIndicators().Contains("FRQ"))
         {
-            if (new [] {2,3,5,7}.Contains(Bomb.GetSerialNumberNumbers().Last()))
+            if (new[] { 2, 3, 5, 7 }.Contains(Bomb.GetSerialNumberNumbers().Last()))
                 dose = "2g";
             else
                 dose = (Bomb.GetPorts().Distinct().Count() + Bomb.GetModuleNames().Count()) + "mg";
@@ -216,7 +225,7 @@ public class DrDoctorModule : MonoBehaviour
         else
         {
             if (_selectableSymptoms.Contains("Fever"))
-                dose = ((Bomb.GetSolvedModuleNames().Count() * (Bomb.GetSolvableModuleNames().Count() - Bomb.GetSolvedModuleNames().Count)).ToString() + "mg");
+                dose = ((numSolved * (Bomb.GetSolvableModuleNames().Count() - numSolved)).ToString() + "mg");
             else
             {
                 if (Bomb.GetModuleNames().Contains("The iPhone"))
@@ -234,92 +243,29 @@ public class DrDoctorModule : MonoBehaviour
         return dose;
     }
 
-    private bool SympLeftPressed()
+    private KMSelectable.OnInteractHandler MakeButtonPressHandler(KMSelectable button, Action action)
     {
-        _selectedSymptom = (_selectedSymptom + _selectableSymptoms.Length - 1) % _selectableSymptoms.Length;
-        SetTexts();
-        return false;
-    }
-
-    private bool SympRightPressed()
-    {
-        _selectedSymptom = (_selectedSymptom + 1) % _selectableSymptoms.Length;
-        SetTexts();
-        return false;
-    }
-
-    private bool DrugLeftPressed()
-    {
-        _selectedTreatment = (_selectedTreatment + _selectableTreatments.Length - 1) % _selectableTreatments.Length;
-        SetTexts();
-        return false;
-    }
-
-    private bool DrugRightPressed()
-    {
-        _selectedTreatment = (_selectedTreatment + 1) % _selectableTreatments.Length;
-        SetTexts();
-        return false;
-    }
-
-    private bool DiaLeftPressed()
-    {
-        _selectedDiagnosis = (_selectedDiagnosis + _selectableDiagnoses.Length - 1) % _selectableDiagnoses.Length;
-        SetTexts();
-        return false;
-    }
-
-    private bool DiaRightPressed()
-    {
-        _selectedDiagnosis = (_selectedDiagnosis + 1) % _selectableDiagnoses.Length;
-        SetTexts();
-        return false;
-    }
-
-    private bool DoseLeftPressed()
-    {
-        _selectedDose = (_selectedDose + _selectableDoses.Length - 1) % _selectableDoses.Length;
-        SetTexts();
-        return false;
-    }
-
-    private bool DoseRightPressed()
-    {
-        _selectedDose = (_selectedDose + 1) % _selectableDoses.Length;
-        SetTexts();
-        return false;
-    }
-
-    private bool MnthDwnPressed()
-    {
-        _selectedMonth = (_selectedMonth + 10) % 12 + 1;
-        SetTexts();
-        return false;
-    }
-
-    private bool MnthUpPressed()
-    {
-        _selectedMonth = _selectedMonth % 12 + 1;
-        SetTexts();
-        return false;
-    }
-
-    private bool DateDwnPressed()
-    {
-        _selectedDate = (_selectedDate + 29) % 31 + 1;
-        SetTexts();
-        return false;
-    }
-
-    private bool DateUpPressed()
-    {
-        _selectedDate = _selectedDate % 31 + 1;
-        SetTexts();
-        return false;
+        return delegate
+        {
+            button.AddInteractionPunch();
+            Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, button.transform);
+            if (!_isSolved)
+            {
+                action();
+                SetTexts();
+            }
+            return false;
+        };
     }
 
     private bool CaduceusPressed()
     {
+        Caduceus.AddInteractionPunch();
+        Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, Caduceus.transform);
+
+        if (_isSolved)
+            return false;
+
         var answer = CalculateAnswer(_halfBombTime <= Bomb.GetTime());
 
         // Check treatment
@@ -331,9 +277,10 @@ public class DrDoctorModule : MonoBehaviour
         }
 
         // Check dose
-        if (_selectableDoses[_selectedDose] != answer.Dose)
+        var numSolved = Bomb.GetSolvedModuleNames().Count;
+        if (_selectableDoses[_selectedDose] != answer.Doses[numSolved])
         {
-            LogMessage("Wrong dose selected. I expected {0}, but you gave me {1}.", answer.Dose, _selectableDoses[_selectedDose]);
+            LogMessage("Wrong dose selected. We have {0} solved modules, so I expected {1}, but you gave me {2}.", numSolved, answer.Doses[numSolved], _selectableDoses[_selectedDose]);
             Module.HandleStrike();
             return false;
         }
@@ -357,6 +304,7 @@ public class DrDoctorModule : MonoBehaviour
         // Everything correct!
         LogMessage("Module solved.");
         Module.HandlePass();
+        _isSolved = true;
 
         return false;
     }
@@ -430,7 +378,7 @@ public class DrDoctorModule : MonoBehaviour
             Day = correctDate.Day,
             Month = correctDate.Month,
             Diagnosis = _diseases[index].Disease,
-            Dose = CalculateCorrectDose(),
+            Doses = Enumerable.Range(0, Bomb.GetSolvableModuleNames().Count).Select(numSolved => CalculateCorrectDose(numSolved)).ToArray(),
             Treatment = Bomb.GetSolvableModuleNames().Contains("Forget Me Not") && (Bomb.GetBatteryHolderCount() == 3) && (Bomb.GetBatteryCount() == 3) && (Bomb.GetOnIndicators().Contains("FRK") && Bomb.GetOffIndicators().Contains("TRN"))
                 ? "Cyanide"
                 : _diseases[index].Treatment

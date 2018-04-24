@@ -4,5 +4,5 @@
     public int Month;
     public string Diagnosis;
     public string Treatment;
-    public string Dose;
+    public string[] Doses;
 }

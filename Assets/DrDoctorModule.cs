@@ -67,7 +67,7 @@ public class DrDoctorModule : MonoBehaviour
         new DiseaseInfo { Character = 'S', Disease = "Seizure Siphor",          Symptoms = new[] { "Constipation", "Bloating", "Hallucination" },          Treatment = "Leega Ledgins"    },
         new DiseaseInfo { Character = 'T', Disease = "Tetrinus",                Symptoms = new[] { "Hallucination", "Cold Hands", "Dizziness" },           Treatment = "No-Mercy"         },
         new DiseaseInfo { Character = 'U', Disease = "Urinary LEDs",            Symptoms = new[] { "Chills", "Nausea", "Numbness" },                       Treatment = "Assassine Cream"  },
-        new DiseaseInfo { Character = 'V', Disease = "Verticode",               Symptoms = new[] { "Loss of smell", "Cold Hands", "Sleepiness" },          Treatment = "Cupcakes"         },
+        new DiseaseInfo { Character = 'V', Disease = "Verticode",               Symptoms = new[] { "Loss of Smell", "Cold Hands", "Sleepiness" },          Treatment = "Cupcakes"         },
         new DiseaseInfo { Character = 'W', Disease = "Widgeting",               Symptoms = new[] { "Thirstiness", "Cough", "Fatigue" },                    Treatment = "GLa-doze"         },
         new DiseaseInfo { Character = 'X', Disease = "XMAs",                    Symptoms = new[] { "Diarrhea", "Sleepiness", "Foot swelling" },            Treatment = "Ball of Cootie"   },
         new DiseaseInfo { Character = 'Y', Disease = "Yes-no infection",        Symptoms = new[] { "Gas", "Throat irritation", "Muscle Cramp" },           Treatment = "War-Med"          },
@@ -76,7 +76,7 @@ public class DrDoctorModule : MonoBehaviour
         new DiseaseInfo { Character = '2', Disease = "Jukepox",                 Symptoms = new[] { "Sleepiness", "Headache", "Dizziness" },                Treatment = "Solid Gear Metal" },
         new DiseaseInfo { Character = '3', Disease = "Neurolysis",              Symptoms = new[] { "Foot swelling", "Excessive Crying", "Nausea" },        Treatment = "Vitamin BEAM"     },
         new DiseaseInfo { Character = '4', Disease = "Perspective Loss",        Symptoms = new[] { "Sleepiness", "Bloating", "Dizziness" },                Treatment = "Waldohol"         },
-        new DiseaseInfo { Character = '5', Disease = "Orientitis",              Symptoms = new[] { "Gas", "Numbness", "Loss of smell" },                   Treatment = "Semtex"           },
+        new DiseaseInfo { Character = '5', Disease = "Orientitis",              Symptoms = new[] { "Gas", "Numbness", "Loss of Smell" },                   Treatment = "Semtex"           },
         new DiseaseInfo { Character = '6', Disease = "Huntington’s disease",    Symptoms = new[] { "Cold Hands", "Sleepiness", "Throat irritation" },      Treatment = "Tetrisine"        },
     };
     private static CorrectDates[] _dates = new CorrectDates[]

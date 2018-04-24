@@ -132,6 +132,12 @@ public class DrDoctorModule : MonoBehaviour
     {
         _moduleId = _moduleIdCounter++;
         _isSolved = false;
+        StartCoroutine(Initialize());
+    }
+
+    private IEnumerator Initialize()
+    {
+        yield return null;
         _halfBombTime = Bomb.GetTime() / 2;
 
         var numIterations = 0;
@@ -155,7 +161,7 @@ public class DrDoctorModule : MonoBehaviour
                 DrugText.text = "the";
                 DoseText.text = "Caduceus";
                 Caduceus.OnInteract = delegate { Module.HandlePass(); return false; };
-                return;
+                yield break;
             }
             goto tryAgain;
         }

@@ -124,9 +124,6 @@ public class DrDoctorModule : MonoBehaviour
     private int _selectedDate;
     private int _selectedMonth;
     private bool _isSolved;
-
-    private float _initialBombTime;
-    private float _bombModulesTotal;
     private float _halfBombTime;
 
     const string rules = "AFDPEOMZBGLQHRM1CJKUNYX5ITV3S246";
@@ -135,8 +132,6 @@ public class DrDoctorModule : MonoBehaviour
     {
         _moduleId = _moduleIdCounter++;
         _isSolved = false;
-        _initialBombTime = Bomb.GetTime();
-        _bombModulesTotal = Bomb.GetSolvableModuleNames().Count();
         _halfBombTime = Bomb.GetTime() / 2;
 
         var numIterations = 0;
@@ -398,7 +393,6 @@ public class DrDoctorModule : MonoBehaviour
 
     private class CycleInfo
     {
-        public KMSelectable Left;
         public KMSelectable Right;
         public string[] Values;
     }

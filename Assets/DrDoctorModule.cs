@@ -143,8 +143,9 @@ public class DrDoctorModule : MonoBehaviour
         tryAgain:
         numIterations++;
 
+        var selectableDiseases = _diseases.ToList().Shuffle().Take(3).ToArray();
         _selectableSymptoms = _diseases.SelectMany(d => d.Symptoms).Distinct().ToList().Shuffle().Take(5).ToArray();
-        _selectableDiagnoses = _diseases.Select(d => d.Disease).ToList().Shuffle().Take(3).ToArray();
+        _selectableDiagnoses = selectableDiseases.Select(d => d.Disease).ToArray();
 
         var answer1 = CalculateAnswer(false);
         var answer2 = CalculateAnswer(true);
@@ -164,7 +165,8 @@ public class DrDoctorModule : MonoBehaviour
             goto tryAgain;
         }
 
-        _selectableTreatments = new[] { answer1.Treatment, answer2.Treatment, "Cyanide" }.Distinct().Concat(_diseases.Select(d => d.Treatment).Except(new[] { answer1.Treatment, answer2.Treatment }).ToList().Shuffle()).Take(5).ToArray().Shuffle();
+        var definiteTreatments = selectableDiseases.Select(d => d.Treatment);
+        _selectableTreatments = definiteTreatments.Concat(new[] { "Cyanide" }).Distinct().Concat(_diseases.Select(d => d.Treatment).Except(definiteTreatments).ToList().Shuffle()).Take(5).ToArray().Shuffle();
         var selectableDoses = new HashSet<string>(answer1.Doses.Concat(answer2.Doses).Concat(new[] { "420g" }));
         while (selectableDoses.Count < 5)
             selectableDoses.Add(Rnd.Range(1, 1000) + "mg");

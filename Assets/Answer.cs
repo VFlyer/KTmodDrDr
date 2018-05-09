@@ -5,4 +5,5 @@
     public string Diagnosis;
     public string Treatment;
     public string[] Doses;
+    public string VennInfo;
 }

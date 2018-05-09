@@ -140,34 +140,31 @@ public class DrDoctorModule : MonoBehaviour
         yield return null;
         _halfBombTime = Bomb.GetTime() / 2;
 
-        var numIterations = 0;
-        tryAgain:
-        numIterations++;
+        var allDiseases = _diseases.ToList();
+        var goodDisease1 = allDiseases.PickRandomAndRemove();
+        var goodDisease2 = allDiseases.PickRandomAndRemove();
+        var symptoms = goodDisease1.Symptoms.Concat(goodDisease2.Symptoms).ToHashSet();
+        var wrongDisease = allDiseases.Where(d => !d.Symptoms.All(s => symptoms.Contains(s))).PickRandom();
+        var remainingSymptoms = allDiseases.SelectMany(d => d.Symptoms).Distinct().Except(symptoms.Concat(wrongDisease.Symptoms)).ToList().Shuffle();
 
-        var selectableDiseases = _diseases.ToList().Shuffle().Take(3).ToArray();
-        _selectableSymptoms = _diseases.SelectMany(d => d.Symptoms).Distinct().ToList().Shuffle().Take(5).ToArray();
-        _selectableDiagnoses = selectableDiseases.Select(d => d.Disease).ToArray();
+        _selectableSymptoms = symptoms.Concat(remainingSymptoms.Take(7 - symptoms.Count)).ToArray().Shuffle();
+        var selectableDiseases = new[] { goodDisease1, goodDisease2, wrongDisease };
+        _selectableDiagnoses = selectableDiseases.Select(d => d.Disease).ToArray().Shuffle();
 
         var answer1 = CalculateAnswer(false);
         var answer2 = CalculateAnswer(true);
 
-        if (answer1 == null || answer2 == null)
+        var selectableTreatments = selectableDiseases.Select(d => d.Treatment).ToList();
+        selectableTreatments.Add("Cyanide");
+        var allTreatments = _diseases.Select(d => d.Treatment).Except(selectableTreatments).ToList();
+        while (selectableTreatments.Count < 5)
         {
-            if (numIterations > 1000)
-            {
-                Debug.LogFormat("[Dr. Doctor #{0}] Possible bug in the module. Press the Caduceus to solve.", _moduleId);
-                SympText.text = "Just";
-                DiagnoseText.text = "press";
-                DrugText.text = "the";
-                DoseText.text = "Caduceus";
-                Caduceus.OnInteract = delegate { Module.HandlePass(); return false; };
-                yield break;
-            }
-            goto tryAgain;
+            var ix = Rnd.Range(0, allTreatments.Count);
+            selectableTreatments.Add(allTreatments[ix]);
+            allTreatments.RemoveAt(ix);
         }
+        _selectableTreatments = selectableTreatments.ToArray().Shuffle();
 
-        var definiteTreatments = selectableDiseases.Select(d => d.Treatment);
-        _selectableTreatments = definiteTreatments.Concat(new[] { "Cyanide" }).Distinct().Concat(_diseases.Select(d => d.Treatment).Except(definiteTreatments).ToList().Shuffle()).Take(5).ToArray().Shuffle();
         var selectableDoses = new HashSet<string>(answer1.Doses.Concat(answer2.Doses).Concat(new[] { "420g" }));
         while (selectableDoses.Count < 5)
             selectableDoses.Add(Rnd.Range(1, 1000) + "mg");
@@ -178,9 +175,11 @@ public class DrDoctorModule : MonoBehaviour
 
         var numSolvable = Bomb.GetSolvableModuleNames().Count;
         LogMessage("Solution before half of the bomb time has passed:");
+        LogMessage("Venn diagram: {0}", answer1.VennInfo);
         LogMessage("Diagnosis: {0}, Treatment: {1}, Follow-up date: {2}/{3}", answer1.Diagnosis, answer1.Treatment, answer1.Day, answer1.Month);
         LogMessage("Dosis per number of solved modules: {0}", string.Join(", ", answer1.Doses.Select((d, ix) => string.Format("{0}={1}", ix, d)).ToArray()));
         LogMessage("Solution after half of the bomb time has passed:");
+        LogMessage("Venn diagram: {0}", answer2.VennInfo);
         LogMessage("Diagnosis: {0}, Treatment: {1}, Follow-up date: {2}/{3}", answer2.Diagnosis, answer2.Treatment, answer2.Day, answer2.Month);
         LogMessage("Dosis per number of solved modules: {0}", string.Join(", ", answer2.Doses.Select((d, ix) => string.Format("{0}={1}", ix, d)).ToArray()));
 
@@ -315,39 +314,46 @@ public class DrDoctorModule : MonoBehaviour
     private Answer CalculateAnswer(bool halfTimePassed)
     {
         var rule = 0;
+        List<string> venn = new List<string>();
 
         // Red: Last Digit of SN even
         if (Bomb.GetSerialNumberNumbers().Last() % 2 == 0)
         {
             rule += 8;
+            venn.Add("Red");
         }
         // Orange: More than half the bombs time is left
         if (halfTimePassed)
         {
             rule += 16;
+            venn.Add("Orange");
         }
         // Yellow: More Lit than Unlit
         if (Bomb.GetOnIndicators().Count() > Bomb.GetOffIndicators().Count())
         {
             rule += 2;
+            venn.Add("Yellow");
         }
         // Green: 2 or more Batteries
         if (Bomb.GetBatteryCount() >= 2)
         {
             rule += 4;
+            venn.Add("Green");
         }
         // Blue: Even number of modules.
         if (Bomb.GetModuleNames().Count() % 2 == 0)
         {
             rule += 1;
+            venn.Add("Blue");
         }
 
         // Starting from that disease, find the first one that has all three symptoms on the bomb
         var tentativeIndex = _diseases.IndexOf(d => d.Character == rules[rule]);
+        var goingForward = "AEIOU".Contains(_diseases[tentativeIndex].Disease.First());
         var index = -1;
-        for (int i = 0; i < _diseases.Length; i++)
+        for (int i = 0; i < _diseases.Length && index == -1; i++)
         {
-            var ri = (tentativeIndex + i) % _diseases.Length;
+            var ri = (tentativeIndex + (goingForward ? i : _diseases.Length - i)) % _diseases.Length;
             if (Array.IndexOf(_selectableDiagnoses, _diseases[ri].Disease) != -1 && _diseases[ri].Symptoms.All(s => _selectableSymptoms.Contains(s)))
                 index = ri;
         }
@@ -384,7 +390,8 @@ public class DrDoctorModule : MonoBehaviour
             Doses = Enumerable.Range(0, Bomb.GetSolvableModuleNames().Count).Select(numSolved => CalculateCorrectDose(numSolved)).ToArray(),
             Treatment = Bomb.GetSolvableModuleNames().Contains("Forget Me Not") && (Bomb.GetBatteryHolderCount() == 3) && (Bomb.GetBatteryCount() == 3) && (Bomb.GetOnIndicators().Contains("FRK") && Bomb.GetOffIndicators().Contains("TRN"))
                 ? "Cyanide"
-                : _diseases[index].Treatment
+                : _diseases[index].Treatment,
+            VennInfo = string.Format("{0} = {1}; going {2} in list", venn.Count == 0 ? "(none)" : venn.JoinString("+"), rules[rule], goingForward ? "forwards" : "backwards")
         };
     }
 

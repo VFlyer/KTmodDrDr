@@ -37,6 +37,17 @@ namespace DrDoctor
             return arr[Rnd.Range(0, arr.Length)];
         }
 
+        public static T PickRandomAndRemove<T>(this List<T> src)
+        {
+            if (src == null)
+                throw new ArgumentNullException("src");
+
+            var ix = Rnd.Range(0, src.Count);
+            var t = src[ix];
+            src.RemoveAt(ix);
+            return t;
+        }
+
         public static string JoinString<T>(this IEnumerable<T> values, string separator = null, string prefix = null, string suffix = null, string lastSeparator = null)
         {
             if (values == null)
@@ -91,6 +102,13 @@ namespace DrDoctor
                 index++;
             }
             return -1;
+        }
+
+        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> src)
+        {
+            if (src == null)
+                throw new ArgumentNullException("src");
+            return new HashSet<T>(src);
         }
     }
 }

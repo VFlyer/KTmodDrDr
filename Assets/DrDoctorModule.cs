@@ -513,7 +513,7 @@ public class DrDoctorModule : MonoBehaviour
     {
         for (int i = 0; i < items; i++)
         {
-            if (getSelection().StartsWith(input, StringComparison.InvariantCultureIgnoreCase))
+            if (getSelection().StartsWith(input.Trim(), StringComparison.InvariantCultureIgnoreCase))
             {
                 found();
                 yield break;

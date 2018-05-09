@@ -464,7 +464,7 @@ public class DrDoctorModule : MonoBehaviour
             var pieces = command.Substring(command.IndexOf(' ') + 1).Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
             if (pieces.Length != 5)
             {
-                yield return "sendtochaterror I need 5 items: disease, treatment, dose, day, and month of the follow-up appointment.";
+                yield return "sendtochaterror I need 5 items: disease, treatment, dose, day, and month of the follow-up appointment. By Livio, Timwi, DanielL and Rexkix";
                 yield break;
             }
             yield return null;

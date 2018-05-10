@@ -461,7 +461,7 @@ public class DrDoctorModule : MonoBehaviour
         }
         else if (command.StartsWith("submit ") || command.StartsWith("treat ") || command.StartsWith("answer "))
         {
-            var pieces = command.Substring(command.IndexOf(' ') + 1).Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
+            var pieces = command.Substring(command.IndexOf(' ') + 1).Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim()).ToArray();
             if (pieces.Length != 5)
             {
                 yield return "sendtochaterror I need 5 items: disease, treatment, dose, day, and month of the follow-up appointment.";

@@ -2,7 +2,7 @@
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace BlindAlley
+namespace TheCode
 {
     /// <summary>
     /// Some helper extensions methods for the KMBombInfo class.

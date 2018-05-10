@@ -453,6 +453,7 @@ public class DrDoctorModule : MonoBehaviour
                 for (int i = 0; i < cyc.Values.Length; i++)
                 {
                     cyc.Right.OnInteract();
+                    yield return "trycancel";
                     yield return new WaitForSeconds(1.2f);
                 }
                 yield return new WaitForSeconds(.5f);
@@ -520,6 +521,7 @@ public class DrDoctorModule : MonoBehaviour
             }
             rightButton.OnInteract();
             yield return new WaitForSeconds(.1f);
+            yield return "trycancel";
         }
         if (isValid)
         {

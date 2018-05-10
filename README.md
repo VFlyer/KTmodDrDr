@@ -1,3 +1,4 @@
-The Code.
-Regular module for KTaNE.
-By: Marksam32, Livio.
+# KTmodDrDr
+Dr. Doctor, a modded module for the game Keep Talking and Nobody Explodes.
+
+

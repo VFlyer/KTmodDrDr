@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 6ffd06c6b9291d848ae937b5fab8899f
+timeCreated: 1523183579
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Circ
+  fontNames:
+  - Circ
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

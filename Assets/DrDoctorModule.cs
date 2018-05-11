@@ -174,6 +174,8 @@ public class DrDoctorModule : MonoBehaviour
         _selectedDate = Rnd.Range(1, 32);
 
         var numSolvable = Bomb.GetSolvableModuleNames().Count;
+        LogMessage("Diseases listed: {0}", _selectableDiagnoses.JoinString(", "));
+        LogMessage("Symptoms listed: {0}", _selectableSymptoms.JoinString(", "));
         LogMessage("Solution before half of the bomb time has passed:");
         LogMessage("Venn diagram: {0}", answer1.VennInfo);
         LogMessage("Diagnosis: {0}, Treatment: {1}, Follow-up date: {2}/{3}", answer1.Diagnosis, answer1.Treatment, answer1.Day, answer1.Month);

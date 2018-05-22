@@ -126,7 +126,7 @@ public class DrDoctorModule : MonoBehaviour
     private bool _isSolved;
     private float _halfBombTime;
 
-    const string rules = "AFDPEOMZBGLQHRM1CJKUNYX5ITV3S246";
+    const string rules = "AFDPEOMZBGLQHRW1CJKUNYX5ITV3S246";
 
     void Start()
     {

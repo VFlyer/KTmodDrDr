@@ -270,7 +270,7 @@ public class DrDoctorModule : MonoBehaviour
         if (_isSolved)
             return false;
 
-        var answer = CalculateAnswer(_halfBombTime <= Bomb.GetTime());
+        var answer = CalculateAnswer(_halfBombTime > Bomb.GetTime());
 
         // Check treatment
         if (_selectableTreatments[_selectedTreatment] != answer.Treatment)
@@ -325,7 +325,7 @@ public class DrDoctorModule : MonoBehaviour
             venn.Add("Red");
         }
         // Orange: More than half the bombs time is left
-        if (!halfTimePassed)
+        if (halfTimePassed)
         {
             rule += 16;
             venn.Add("Orange");

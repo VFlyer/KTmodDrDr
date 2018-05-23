@@ -403,7 +403,7 @@ public class DrDoctorModule : MonoBehaviour
     }
 
 #pragma warning disable 414
-    private string TwitchHelpMessage = @"Use “!{0} cycle symptoms diagnoses treatments doses” to cycle any combination of screens or “!{0} cycle” to cycle all of them. Submit the correct solution with “!{0} treat <disease>,<treatment>,<dose>,<day>,<month>”.";
+    private readonly string TwitchHelpMessage = @"Use “!{0} cycle symptoms diagnoses treatments doses” to cycle any combination of screens or “!{0} cycle” to cycle all of them. Submit the correct solution with “!{0} treat <disease>,<treatment>,<dose>,<day>,<month>”. Don’t forget the unit for the dose (g or mg)!";
 #pragma warning restore 414
 
     private class CycleInfo
@@ -456,9 +456,9 @@ public class DrDoctorModule : MonoBehaviour
                 {
                     cyc.Right.OnInteract();
                     yield return "trycancel";
-                    yield return new WaitForSeconds(1.2f);
+                    yield return new WaitForSeconds(2f);
                 }
-                yield return new WaitForSeconds(.5f);
+                yield return new WaitForSeconds(.75f);
             }
             yield break;
         }
@@ -514,9 +514,10 @@ public class DrDoctorModule : MonoBehaviour
 
     private IEnumerable<object> trySubmit(int items, KMSelectable rightButton, Func<string> getSelection, string input, string thing, bool isValid, Action found)
     {
+        var inp = input.Trim().Replace(" ", "");
         for (int i = 0; i < items; i++)
         {
-            if (getSelection().StartsWith(input.Trim(), StringComparison.InvariantCultureIgnoreCase))
+            if (getSelection().Replace(" ", "").StartsWith(inp, StringComparison.InvariantCultureIgnoreCase))
             {
                 found();
                 yield break;

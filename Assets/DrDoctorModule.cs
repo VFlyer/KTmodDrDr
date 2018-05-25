@@ -324,8 +324,8 @@ public class DrDoctorModule : MonoBehaviour
             rule += 8;
             venn.Add("Red");
         }
-        // Orange: More than half the bombs time is left
-        if (halfTimePassed)
+        // Orange: More than half the bomb’s time is left
+        if (!halfTimePassed)
         {
             rule += 16;
             venn.Add("Orange");

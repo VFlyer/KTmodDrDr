@@ -46,7 +46,7 @@ public class DrDoctorModule : MonoBehaviour
 
     private static DiseaseInfo[] _diseases = new DiseaseInfo[]
     {
-        new DiseaseInfo { Character = 'A', Disease = "Alztimer's",              Symptoms = new[] { "Fever", "Chills", "Dizziness" },                       Treatment = "Minecraftazol"    },
+        new DiseaseInfo { Character = 'A', Disease = "Alztimer’s",              Symptoms = new[] { "Fever", "Chills", "Dizziness" },                       Treatment = "Minecraftazol"    },
         new DiseaseInfo { Character = 'B', Disease = "Braintenance",            Symptoms = new[] { "Headache", "Sleepiness", "Thirstiness" },              Treatment = "Gr-Theta Autazine"},
         new DiseaseInfo { Character = 'C', Disease = "Color allergy",           Symptoms = new[] { "Bloating", "Cough", "Diarrhea" },                      Treatment = "Tears of Tar"     },
         new DiseaseInfo { Character = 'D', Disease = "Detonession",             Symptoms = new[] { "Dizziness", "Fatigue", "Fever" },                      Treatment = "Residentevele"    },
@@ -403,7 +403,7 @@ public class DrDoctorModule : MonoBehaviour
     }
 
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Use “!{0} cycle symptoms diagnoses treatments doses” to cycle any combination of screens or “!{0} cycle” to cycle all of them. Submit the correct solution with “!{0} treat <disease>,<treatment>,<dose>,<day>,<month>”. Don’t forget the unit for the dose (g or mg)!";
+    private readonly string TwitchHelpMessage = @"Use “!{0} cycle symptoms diagnoses treatments doses” to cycle any combination of screens or “!{0} cycle” to cycle all of them. Submit the correct solution with “!{0} treat <disease>,<treatment>,<dose>,<day>,<month>”. Don’t forget the unit for the dose (g or mg)! You can write “lambda” instead of “λ”.";
 #pragma warning restore 414
 
     private class CycleInfo
@@ -464,7 +464,7 @@ public class DrDoctorModule : MonoBehaviour
         }
         else if (command.StartsWith("submit ") || command.StartsWith("treat ") || command.StartsWith("answer "))
         {
-            var pieces = command.Substring(command.IndexOf(' ') + 1).Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim()).ToArray();
+            var pieces = command.Substring(command.IndexOf(' ') + 1).Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim().Replace('\'', '’').Replace("lambda", "λ")).ToArray();
             if (pieces.Length != 5)
             {
                 yield return "sendtochaterror I need 5 items: disease, treatment, dose, day, and month of the follow-up appointment. By Livio, Timwi, DanielL and Rexkix";

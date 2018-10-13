@@ -1,12 +1,12 @@
 ﻿using System;
-using DrDoctor;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using BlindAlley;
+using DrDoctor;
 using UnityEngine;
 using Rnd = UnityEngine.Random;
-using System.Text.RegularExpressions;
-using System.Collections;
 
 /// <summary>
 /// On the Subject of Dr. Doctor
@@ -434,9 +434,10 @@ public class DrDoctorModule : MonoBehaviour
                 { "di", diag },
                 { "treatment", drug },
                 { "treatments", drug },
+                { "t", drug },
                 { "drug", drug },
                 { "drugs", drug },
-                { "t", drug },
+                { "dose", dose },
                 { "dosis", dose },
                 { "doses", dose },
                 { "d", dose }
@@ -446,7 +447,7 @@ public class DrDoctorModule : MonoBehaviour
             var cycle = pieces.Length == 1 ? new[] { symp, diag, drug, dose } : pieces.Skip(1).Select(p => cyclers.ContainsKey(p) ? cyclers[p] : null).ToArray();
             if (cycle.Any(c => c == null))
             {
-                yield return string.Format("sendtochaterror I don’t know what “{0}” is. You can cycle these things: {1}", string.Join(", ", cyclers.Keys.ToArray()));
+                yield return string.Format("sendtochaterror I don’t know what “{0}” is. You can cycle these things: {1}", pieces[cycle.IndexOf(ci => ci == null) + 1], string.Join(", ", cyclers.Keys.ToArray()));
                 yield break;
             }
             yield return null;
